@@ -1,0 +1,57 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  padding-block: 4px;
+
+  // SP: 折り返さず横スクロール。画面端まで広げる
+  @include sp {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: none;
+    width: calc(100% + 32px);
+    margin-inline: -16px;
+    padding-inline: 16px;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+.chip {
+  flex: none;
+  height: 34px;
+  padding: 0 16px;
+  white-space: nowrap;
+  border-radius: $radius-chip;
+  border: 1px solid $color-line;
+  background: transparent;
+  color: $color-muted;
+  font-family: $font-body;
+  font-size: 13px;
+  font-weight: 700;
+  transition: 0.15s;
+
+  &:hover {
+    color: $color-ink;
+    border-color: #3b4066;
+  }
+
+  &[aria-pressed='true'] {
+    color: #fff;
+    border-color: $color-magenta;
+    background: rgba(255, 43, 214, 0.12);
+    box-shadow: $glow-magenta;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: $glow-cyan;
+  }
+}

@@ -1,0 +1,98 @@
+@use '../../styles/tokens' as *;
+
+// GameFrame の中いっぱいに重ねる。cqw はこの要素（= GameFrame の中身）の幅の1%
+.modal {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  container-type: size;
+  display: grid;
+  place-items: center;
+  background: rgba(5, 3, 14, 0.6);
+  backdrop-filter: blur(2px);
+  color: #fff;
+  font-family: $font-body;
+  line-height: 1.6;
+  text-align: center;
+  user-select: none;
+  animation: fade 0.25s ease-out;
+}
+
+.panel {
+  width: 56cqw;
+  padding: 2.6cqw 3cqw 2.4cqw;
+  border-radius: 1.6cqw;
+  background: rgba(16, 17, 30, 0.94);
+  border: 2px solid $color-magenta;
+  box-shadow: 0 0 3cqw rgba(255, 43, 214, 0.5);
+  display: grid;
+  justify-items: center;
+  animation: rise 0.25s ease-out;
+}
+
+.label {
+  margin: 0 0 0.6cqw;
+  font-size: max(11px, 1.6cqw);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: $color-magenta;
+  text-shadow: 0 0 1cqw rgba(255, 43, 214, 0.8);
+}
+
+.score {
+  margin: 0 0 2cqw;
+  font: 800 8cqw / 1 $font-display;
+  color: $color-yellow;
+  text-shadow: 0 0 1.4cqw rgba(255, 230, 0, 0.7);
+}
+
+.unit {
+  font-size: 0.4em;
+  margin-left: 0.2em;
+}
+
+.retry {
+  height: 5cqw;
+  min-height: 34px;
+  padding: 0 3.6cqw;
+  border-radius: 0.9cqw;
+  border: 2px solid $color-cyan;
+  background: rgba(0, 240, 255, 0.12);
+  color: #fff;
+  font-family: $font-body;
+  font-size: max(12px, 1.8cqw);
+  font-weight: 800;
+  box-shadow: 0 0 1.4cqw rgba(0, 240, 255, 0.45);
+  transition: 0.15s;
+
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    background: rgba(0, 240, 255, 0.25);
+    box-shadow: 0 0 2.6cqw rgba(0, 240, 255, 0.8);
+  }
+}
+
+.share {
+  width: 100%;
+  margin-top: 1.8cqw;
+  padding-top: 1.4cqw;
+  border-top: 1px solid $color-line;
+  color: #c9cbf0;
+  --share-border: 1px solid #3b4066;
+  --share-bg-hover: rgba(0, 240, 255, 0.14);
+  --share-focus: #{$color-cyan};
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(1cqw);
+  }
+}

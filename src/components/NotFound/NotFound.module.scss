@@ -1,0 +1,26 @@
+@use '../../styles/tokens' as *;
+
+.notFound {
+  text-align: center;
+  padding: 48px 24px;
+}
+
+.code {
+  margin: 0 0 16px;
+  font: 800 clamp(48px, 10vw, 96px) / 1 $font-display;
+  letter-spacing: 0.08em;
+  color: $color-magenta;
+  text-shadow: 0 0 12px $color-magenta, 0 0 32px rgba(255, 43, 214, 0.6);
+}
+
+.heading {
+  margin: 0 0 8px;
+  font: 800 clamp(18px, 2.4vw, 24px) $font-display;
+  letter-spacing: 0.14em;
+}
+
+.text {
+  margin: 0 0 28px;
+  font-size: 14px;
+  color: $color-muted;
+}

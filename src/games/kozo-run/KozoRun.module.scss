@@ -1,0 +1,180 @@
+// 小僧ラン：夕焼け下町（docs/games/小僧ラン_design.md）
+// 寸法は cqw（GameFrame の幅の1%）で指定する
+
+$ink: #2b1b24;
+$paper: #fff6e5;
+$red: #e8473b;
+$yellow: #ffc93c;
+$font-pop: var(--font-mochiy), sans-serif;
+$font-maru: var(--font-zenmaru), sans-serif;
+
+.root {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  container-type: size;
+  outline: none;
+  color: $ink;
+  font-family: $font-maru;
+  line-height: 1.4;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+// ---------- 危険エフェクト ----------
+.danger {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(110% 120% at 0% 60%, rgba(232, 71, 59, 0.6), transparent 55%);
+  opacity: calc((var(--danger, 0) - 0.55) * 2.2);
+}
+
+// ---------- 距離表示（HUD） ----------
+.hud {
+  position: absolute;
+  top: 3cqw;
+  right: 3cqw;
+  padding: 0.8cqw 1.6cqw 1cqw;
+  text-align: right;
+  line-height: 1;
+  pointer-events: none;
+  background: $paper;
+  border: 0.35cqw solid $ink;
+  border-radius: 1.2cqw;
+  box-shadow: 0.5cqw 0.5cqw 0 $ink;
+  transform: rotate(2deg);
+
+  .root[data-phase='start'] & {
+    display: none;
+  }
+}
+
+.hudLabel {
+  display: block;
+  margin-bottom: 0.3cqw;
+  font-size: 1.2cqw;
+  font-weight: 900;
+}
+
+.hudValue {
+  font: 3.8cqw $font-pop;
+  color: $red;
+}
+
+// 数字ごとの幅の差で枠が揺れないよう、桁数とカンマ数から幅を固定する
+.meter {
+  display: inline-block;
+  text-align: right;
+  white-space: nowrap;
+  width: calc(var(--digits, 1) * 0.68em + var(--commas, 0) * 0.26em);
+}
+
+.hudUnit {
+  margin-left: 0.2em;
+  font-size: 0.5em;
+  color: $ink;
+}
+
+// ---------- スタート画面 ----------
+.start {
+  background: linear-gradient(rgba(255, 180, 90, 0.1), rgba(60, 20, 40, 0.45));
+}
+
+.startInner {
+  display: grid;
+  justify-items: center;
+  gap: 0.6cqw;
+  transform: translateY(-5cqw);
+}
+
+.badge {
+  margin: 0;
+  padding: 0.5cqw 1.8cqw;
+  border-radius: 99px;
+  background: $ink;
+  color: $yellow;
+  font-size: 1.5cqw;
+  font-weight: 900;
+}
+
+.title {
+  margin: 0;
+  font: 10cqw / 1.1 $font-pop;
+  color: $yellow;
+  -webkit-text-stroke: 1cqw $ink;
+  paint-order: stroke fill;
+  text-shadow: 0.7cqw 0.7cqw 0 $ink;
+  transform: rotate(-3deg);
+}
+
+.subtitle {
+  margin: 0;
+  font: 2.2cqw $font-pop;
+  color: #fff;
+  -webkit-text-stroke: 0.5cqw $ink;
+  paint-order: stroke fill;
+}
+
+.startButton {
+  margin-top: 1.2cqw;
+  height: 6.4cqw;
+  padding: 0 5cqw;
+  border: 0.35cqw solid $ink;
+  border-radius: 99px;
+  background: $red;
+  color: #fff;
+  font: 2.6cqw $font-pop;
+  box-shadow: 0 0.6cqw 0 $ink;
+  transition:
+    transform 0.1s,
+    box-shadow 0.1s;
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-0.2cqw);
+    filter: brightness(1.08);
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 0.3cqw dashed #fff;
+    outline-offset: 0.4cqw;
+  }
+
+  &:active {
+    transform: translateY(0.5cqw);
+    box-shadow: 0 0.1cqw 0 $ink;
+  }
+}
+
+.hint {
+  margin: 0.8cqw 0 0;
+  font-size: 1.5cqw;
+  font-weight: 900;
+  color: #fff;
+  text-shadow:
+    0 0 0.6cqw $ink,
+    0 0 0.3cqw $ink;
+}

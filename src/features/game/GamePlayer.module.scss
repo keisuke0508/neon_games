@@ -1,0 +1,44 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.wrap {
+  width: min(#{$game-max-width}, 100%);
+  margin-inline: auto;
+
+  @include sp-landscape-game {
+    width: min(100%, calc((100svh - 96px) * 16 / 9));
+  }
+}
+
+.title {
+  margin: 0 0 14px;
+  font-size: clamp(18px, 2.4vw, 24px);
+  font-weight: 800;
+  overflow-wrap: anywhere;
+
+  @include sp-landscape-game {
+    display: none;
+  }
+}
+
+.rotateHint {
+  display: none;
+  margin: 12px 0 0;
+  text-align: center;
+  font-size: 13px;
+  color: $color-muted;
+
+  @include sp-portrait {
+    display: block;
+  }
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 26px;
+
+  @include sp-landscape-game {
+    margin-top: 8px;
+  }
+}

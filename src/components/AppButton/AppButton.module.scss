@@ -1,0 +1,66 @@
+@use '../../styles/tokens' as *;
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 46px;
+  padding: 0 26px;
+  border-radius: $radius-button;
+  border: 1px solid transparent;
+  color: #fff;
+  font-family: $font-body;
+  font-weight: 800;
+  font-size: 15px;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: 0.15s;
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.primary {
+  border-color: $color-cyan;
+  background: rgba(0, 240, 255, 0.08);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.25), inset 0 0 12px rgba(0, 240, 255, 0.12);
+
+  &:hover,
+  &:focus-visible {
+    background: rgba(0, 240, 255, 0.18);
+    box-shadow: 0 0 22px rgba(0, 240, 255, 0.6), inset 0 0 14px rgba(0, 240, 255, 0.25);
+  }
+}
+
+.danger {
+  border-color: $color-magenta;
+  background: rgba(255, 43, 214, 0.1);
+  box-shadow: 0 0 12px rgba(255, 43, 214, 0.3), inset 0 0 12px rgba(255, 43, 214, 0.15);
+
+  &:hover,
+  &:focus-visible {
+    background: rgba(255, 43, 214, 0.22);
+    box-shadow: 0 0 22px rgba(255, 43, 214, 0.65), inset 0 0 14px rgba(255, 43, 214, 0.3);
+  }
+}
+
+.secondary {
+  border-color: $color-line;
+  background: $color-surface-2;
+  color: $color-ink;
+
+  &:hover,
+  &:focus-visible {
+    border-color: $color-muted;
+    background: #1f2340;
+  }
+
+  // 全操作要素に cyan のフォーカス表示（docs/design.md §7）
+  &:focus-visible {
+    box-shadow: $glow-cyan;
+  }
+}

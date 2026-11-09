@@ -1,0 +1,47 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.search {
+  position: relative;
+  width: min(560px, 100%);
+}
+
+.label {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  translate: 0 -50%;
+  font: 600 11px $font-display;
+  letter-spacing: 0.14em;
+  color: $color-cyan;
+  pointer-events: none;
+
+  @include sp {
+    display: none;
+  }
+}
+
+.input {
+  width: 100%;
+  height: 50px;
+  padding: 0 16px 0 88px;
+  border-radius: $radius-input;
+  border: 1px solid $color-line;
+  background: $color-surface;
+  color: $color-ink;
+  outline: none;
+  transition: 0.2s;
+
+  &::placeholder {
+    color: $color-placeholder;
+  }
+
+  &:focus {
+    border-color: $color-cyan;
+    box-shadow: 0 0 0 1px $color-cyan, 0 0 24px rgba(0, 240, 255, 0.35);
+  }
+
+  @include sp {
+    padding-left: 16px;
+  }
+}

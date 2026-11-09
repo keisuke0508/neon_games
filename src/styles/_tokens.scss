@@ -1,0 +1,36 @@
+// ==========================================================
+// デザイントークン（docs/design.md §1）
+// ==========================================================
+
+// ---------- Color ----------
+$color-bg: #07070f;
+$color-surface: #10111e;
+$color-surface-2: #171a2c;
+$color-ink: #ecebff;
+$color-muted: #8d8fb5;
+$color-placeholder: #777aa8;
+$color-line: #262a45;
+$color-cyan: #00f0ff;
+$color-magenta: #ff2bd6;
+$color-yellow: #ffe600;
+
+// ---------- Glow ----------
+$glow-cyan: 0 0 0 1px $color-cyan, 0 0 26px rgba(0, 240, 255, 0.35);
+$glow-magenta: 0 0 14px rgba(255, 43, 214, 0.45), inset 0 0 10px rgba(255, 43, 214, 0.25);
+
+// ---------- Font（next/font の CSS 変数。layout.tsx で定義） ----------
+$font-body: var(--font-mplus), system-ui, sans-serif;
+$font-display: var(--font-orbitron), sans-serif;
+
+// ---------- Radius ----------
+$radius-chip: 6px;
+$radius-tag: 4px;
+$radius-button: 8px;
+$radius-input: 10px;
+$radius-item: 12px;
+$radius-frame: 14px;
+
+// ---------- Size ----------
+$container-width: 1200px;
+$container-gutter: 16px;
+$game-max-width: 960px;

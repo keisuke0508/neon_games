@@ -1,0 +1,76 @@
+@use '../../styles/tokens' as *;
+
+.item {
+  display: block;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+  background: $color-surface;
+  border: 1px solid $color-line;
+  border-radius: $radius-item;
+  overflow: hidden;
+  transition: 0.2s;
+
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    border-color: $color-cyan;
+    box-shadow: $glow-cyan;
+    transform: translateY(-2px);
+  }
+}
+
+.thumb {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  // 画像の読み込み前・画像がないとき
+  background: $color-surface-2;
+
+  // スキャンライン
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 3px);
+    pointer-events: none;
+  }
+}
+
+.image {
+  object-fit: cover;
+}
+
+.body {
+  padding: 10px 12px 12px;
+}
+
+.title {
+  margin: 0;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.45;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow-wrap: anywhere;
+}
+
+.tags {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.tag {
+  font-size: 10px;
+  color: $color-cyan;
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  border-radius: $radius-tag;
+  padding: 0 6px;
+}

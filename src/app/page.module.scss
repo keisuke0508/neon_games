@@ -1,0 +1,28 @@
+@use '../styles/tokens' as *;
+@use '../styles/mixins' as *;
+
+.hero {
+  text-align: center;
+  padding: 8px 0 4px;
+}
+
+.kicker {
+  margin: 0 0 8px;
+  font: 600 13px $font-display;
+  letter-spacing: 0.3em;
+  color: $color-yellow;
+  @include blink;
+}
+
+.heading {
+  margin: 0;
+  font-size: clamp(24px, 4vw, 40px);
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.accent {
+  white-space: nowrap;
+  color: $color-cyan;
+  text-shadow: 0 0 12px rgba(0, 240, 255, 0.7);
+}

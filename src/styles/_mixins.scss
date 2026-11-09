@@ -1,0 +1,60 @@
+// ==========================================================
+// ブレークポイント・共通ミックスイン（docs/design.md §1）
+// ==========================================================
+
+/// PC: >= 1024px
+@mixin pc {
+  @media (min-width: 1024px) {
+    @content;
+  }
+}
+
+/// Tablet 以上: >= 640px
+@mixin tablet-up {
+  @media (min-width: 640px) {
+    @content;
+  }
+}
+
+/// Tablet 以下: <= 1023px
+@mixin tablet-down {
+  @media (max-width: 1023px) {
+    @content;
+  }
+}
+
+/// SP: <= 639px
+@mixin sp {
+  @media (max-width: 639px) {
+    @content;
+  }
+}
+
+/// SP 縦持ち
+@mixin sp-portrait {
+  @media (max-width: 639px) and (orientation: portrait) {
+    @content;
+  }
+}
+
+/// SP 横持ち（ゲームページ専用）。ゲームページのときだけ適用する
+@mixin sp-landscape-game {
+  @media (orientation: landscape) and (max-height: 520px) {
+    :global(body:has([data-page='game'])) & {
+      @content;
+    }
+  }
+}
+
+/// 点滅（prefers-reduced-motion では globals.scss で停止）
+/// CSS Modules はアニメーション名をファイルごとにハッシュ化するため、
+/// @keyframes も呼び出し元のモジュール内に出力する（Sass がルートへ巻き上げる）
+@mixin blink {
+  animation: blink 1.2s steps(2, start) infinite;
+
+  @keyframes blink {
+    to {
+      visibility: hidden;
+    }
+  }
+}

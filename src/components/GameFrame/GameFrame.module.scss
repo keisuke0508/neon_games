@@ -1,0 +1,14 @@
+@use '../../styles/tokens' as *;
+
+.frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: $radius-frame;
+  border: 2px solid transparent;
+  background:
+    linear-gradient(#000, #000) padding-box,
+    linear-gradient(120deg, $color-cyan, $color-magenta) border-box;
+  box-shadow: 0 0 40px rgba(0, 240, 255, 0.25), 0 0 80px rgba(255, 43, 214, 0.15);
+}
