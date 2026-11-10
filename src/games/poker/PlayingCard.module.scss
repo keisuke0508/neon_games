@@ -1,0 +1,149 @@
+// トランプ（design/games/ポーカー.md §4-1）。カードの幅 = 1em（親の font-size）
+
+$cyan: #00f0ff;
+$magenta: #ff2bd6;
+$yellow: #ffe600;
+
+.card {
+  position: relative;
+  display: block;
+  width: 1em;
+  aspect-ratio: 5 / 7;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  perspective: 8em;
+  transition: transform 0.18s;
+  border-radius: 0.08em;
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 0.03em $cyan, 0 0 0.16em rgba(0, 240, 255, 0.75);
+  }
+}
+
+button.card:disabled {
+  cursor: default;
+}
+
+button.card:not(:disabled) {
+  cursor: pointer;
+
+  &:hover:not(.selected) {
+    transform: translateY(-0.06em);
+  }
+}
+
+.inner {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.45s ease;
+}
+
+.down .inner {
+  transform: rotateY(180deg);
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 0.08em;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background: #12132a;
+  border: 0.03em solid rgba(255, 255, 255, 0.18);
+}
+
+.front {
+  .card[data-color='black'] & {
+    color: $cyan;
+    text-shadow: 0 0 0.08em rgba(0, 240, 255, 0.8);
+    border-color: rgba(0, 240, 255, 0.55);
+  }
+
+  .card[data-color='red'] & {
+    color: $magenta;
+    text-shadow: 0 0 0.08em rgba(255, 43, 214, 0.8);
+    border-color: rgba(255, 43, 214, 0.55);
+  }
+
+  .card[data-color='joker'] & {
+    color: $yellow;
+    text-shadow: 0 0 0.08em rgba(255, 230, 0, 0.8);
+    border-color: rgba(255, 230, 0, 0.6);
+  }
+
+  .selected & {
+    border: 0.035em solid $magenta;
+    box-shadow: 0 0 0.12em rgba(255, 43, 214, 0.9), inset 0 0 0.08em rgba(255, 43, 214, 0.5);
+  }
+}
+
+.back {
+  transform: rotateY(180deg);
+  background:
+    repeating-linear-gradient(45deg, rgba(0, 240, 255, 0.18) 0 0.03em, transparent 0.03em 0.09em),
+    repeating-linear-gradient(-45deg, rgba(255, 43, 214, 0.18) 0 0.03em, transparent 0.03em 0.09em),
+    #0d0e22;
+  border: 0.03em solid rgba(0, 240, 255, 0.5);
+  box-shadow: inset 0 0 0 0.05em #0d0e22, inset 0 0 0 0.07em rgba(255, 43, 214, 0.5);
+}
+
+.rank {
+  position: absolute;
+  top: 0.06em;
+  left: 0.08em;
+  display: grid;
+  justify-items: center;
+  font: 800 0.24em / 1 var(--font-orbitron), sans-serif;
+
+  i {
+    margin-top: 0.1em;
+    font-style: normal;
+    font-size: 0.8em;
+  }
+}
+
+.jokerRank {
+  font-size: 0.12em;
+  writing-mode: vertical-rl;
+  letter-spacing: 0.05em;
+}
+
+.pip {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding-top: 0.12em;
+  font-size: 0.5em;
+  line-height: 1;
+}
+
+.selected {
+  transform: translateY(-0.18em);
+}
+
+.dealing {
+  animation: deal 0.38s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+  animation-delay: var(--deal-delay, 0ms);
+}
+
+@keyframes deal {
+  from {
+    transform: translateY(-1.6em) rotate(-10deg);
+    opacity: 0;
+  }
+}
+
+.leaving {
+  transform: translateY(0.5em);
+  opacity: 0;
+  transition:
+    transform 0.25s,
+    opacity 0.25s;
+}

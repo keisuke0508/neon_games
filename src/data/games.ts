@@ -8,6 +8,14 @@ export const games: Game[] = [
     image: '/images/games/kozo-run.png',
     categoryIds: ['action'],
   },
+  {
+    // docs/games/ポーカー.md
+    id: '2',
+    title: '1vs1 ポーカー',
+    // TODO: 一覧用の 16:9 画像は未用意（design/games/ポーカー.md §7）
+    image: '',
+    categoryIds: ['table'],
+  },
 ];
 
 export function getGameById(id: string): Game | undefined {

@@ -1,0 +1,780 @@
+// 1vs1 ポーカー：ネオン・カジノ（design/games/ポーカー.md）
+// 寸法は cqw（GameFrame の幅の1%）。GameFrame の高さは 56.25cqw
+
+$cyan: #00f0ff;
+$magenta: #ff2bd6;
+$yellow: #ffe600;
+$surface: #10111e;
+$surface-2: #171a2c;
+$line: #2c3050;
+$ink: #ecebff;
+$muted: #9ea0c8;
+$display: var(--font-orbitron), sans-serif;
+$body: var(--font-mplus), sans-serif;
+
+@mixin glow-focus {
+  &:focus-visible {
+    outline: none;
+    border-color: $cyan;
+    box-shadow: 0 0 1.2cqw rgba(0, 240, 255, 0.6);
+  }
+}
+
+.root {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  container-type: size;
+  outline: none;
+  background: #07070f;
+  color: $ink;
+  font-family: $body;
+  font-size: 1.5cqw;
+  line-height: 1.4;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+// 基本のリセット（:where で詳細度を 0 にし、各部品のクラスで上書きできるようにする）
+:where(.root) :where(p, h2, h3, ul, ol) {
+  margin: 0;
+}
+
+:where(.root) :where(button) {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+:where(.root) :where(button:disabled) {
+  cursor: default;
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+// ---------- テーブル ----------
+.table {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(70% 70% at 50% 50%, #1a0f33, #07070f 75%);
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+  }
+
+  &::before {
+    inset: 6cqw 5cqw 7cqw;
+    border: 0.25cqw solid rgba(0, 240, 255, 0.7);
+    box-shadow: 0 0 1.6cqw rgba(0, 240, 255, 0.45), inset 0 0 2.4cqw rgba(0, 240, 255, 0.25);
+  }
+
+  &::after {
+    inset: 7.6cqw 6.6cqw 8.6cqw;
+    border: 0.15cqw dashed rgba(255, 43, 214, 0.45);
+  }
+}
+
+// ---------- 上部 ----------
+.top {
+  position: absolute;
+  top: 1.6cqw;
+  left: 2.2cqw;
+  right: 2.2cqw;
+  z-index: 12;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
+}
+
+.round {
+  font: 600 max(11px, 1.5cqw) $display;
+  letter-spacing: 0.14em;
+  color: $muted;
+
+  b {
+    font-size: 1.5em;
+    color: $cyan;
+    text-shadow: 0 0 1cqw rgba(0, 240, 255, 0.7);
+  }
+
+  .root[data-phase='start'] & {
+    visibility: hidden;
+  }
+}
+
+.rulesButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6cqw;
+  height: 3.6cqw;
+  min-height: 28px;
+  padding: 0 1.4cqw;
+  border: 1px solid $line;
+  border-radius: 99px;
+  background: rgba(16, 17, 30, 0.8);
+  font-size: max(11px, 1.4cqw);
+  font-weight: 700;
+  transition: 0.15s;
+
+  &:hover {
+    border-color: $cyan;
+    box-shadow: 0 0 1.2cqw rgba(0, 240, 255, 0.4);
+  }
+
+  @include glow-focus;
+}
+
+// ---------- 席 ----------
+.seat {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2cqw;
+}
+
+.seatCpu {
+  top: 2.4cqw;
+
+  .info {
+    order: 2;
+  }
+
+  .hand {
+    font-size: 6.2cqw;
+  }
+}
+
+.seatYou {
+  bottom: 9.2cqw;
+  transition: transform 0.25s ease;
+
+  .hand {
+    font-size: 9.4cqw;
+  }
+
+  // 賭け金パネルを開いている間は、手札を左に寄せてパネルと重ならないようにする
+  .isBetting & {
+    transform: translateX(-14cqw);
+  }
+}
+
+.hand {
+  display: flex;
+  gap: 0.9cqw;
+}
+
+.info {
+  position: relative;
+  display: grid;
+  gap: 0.3cqw;
+  min-width: 15cqw;
+  padding: 1cqw 1.3cqw;
+  background: rgba(16, 17, 30, 0.82);
+  border: 1px solid $line;
+  border-radius: 1cqw;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+
+  .isDealer & {
+    border-color: rgba(255, 43, 214, 0.6);
+  }
+
+  .isWinner & {
+    border-color: $yellow;
+    box-shadow: 0 0 2cqw rgba(255, 230, 0, 0.5);
+  }
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  gap: 0.8cqw;
+  font: 600 max(10px, 1.2cqw) $display;
+  letter-spacing: 0.16em;
+  color: $muted;
+}
+
+.dealer {
+  visibility: hidden;
+  padding: 0.1cqw 0.7cqw;
+  border-radius: 0.4cqw;
+  background: $magenta;
+  color: #fff;
+  font: 800 max(10px, 1.2cqw) / 1.3 $body;
+  letter-spacing: 0;
+  box-shadow: 0 0 1cqw rgba(255, 43, 214, 0.7);
+
+  .isDealer & {
+    visibility: visible;
+  }
+}
+
+.coins {
+  white-space: nowrap;
+
+  b {
+    font: 800 2.3cqw $display;
+    color: $yellow;
+    text-shadow: 0 0 1cqw rgba(255, 230, 0, 0.5);
+  }
+
+  small {
+    margin-left: 0.4cqw;
+    font-size: max(9px, 1.1cqw);
+    color: $muted;
+  }
+}
+
+.handName {
+  min-height: 1.4em;
+  font-size: max(10px, 1.3cqw);
+  font-weight: 800;
+  color: $cyan;
+}
+
+// CPU の吹き出し：CPU の情報欄のすぐ下
+.say {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 0.8cqw);
+  z-index: 3;
+  padding: 0.5cqw 1.6cqw;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  background: $surface;
+  border: 1px solid $cyan;
+  border-radius: 99px;
+  font-size: max(11px, 1.5cqw);
+  font-weight: 800;
+  box-shadow: 0 0 1.4cqw rgba(0, 240, 255, 0.45);
+  animation: say 0.25s ease-out;
+}
+
+@keyframes say {
+  from {
+    transform: translateX(-50%) scale(0.7);
+    opacity: 0;
+  }
+}
+
+// ---------- 中央：POT・メッセージ ----------
+.center {
+  position: absolute;
+  top: 15.6cqw;
+  left: 0;
+  right: 0;
+  display: grid;
+  justify-items: center;
+  gap: 1cqw;
+  text-align: center;
+  pointer-events: none;
+
+  .root[data-phase='start'] & {
+    visibility: hidden;
+  }
+}
+
+.pot {
+  display: flex;
+  align-items: baseline;
+  gap: 1cqw;
+  padding: 0.6cqw 2.2cqw;
+  border: 1px solid rgba(255, 43, 214, 0.6);
+  border-radius: 99px;
+  background: rgba(16, 17, 30, 0.85);
+  box-shadow: 0 0 1.6cqw rgba(255, 43, 214, 0.35);
+
+  span {
+    font: 600 max(10px, 1.2cqw) $display;
+    letter-spacing: 0.2em;
+    color: $magenta;
+  }
+
+  b {
+    font: 800 3cqw $display;
+    color: $yellow;
+  }
+}
+
+.message {
+  min-height: 1.5em;
+  font-size: max(11px, 1.6cqw);
+  font-weight: 700;
+  color: #d6d7f5;
+}
+
+// ---------- ボタン ----------
+.actions {
+  position: absolute;
+  bottom: 1.8cqw;
+  left: 0;
+  right: 0;
+  z-index: 6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.2cqw;
+  min-height: 5cqw;
+
+  .isBetting & {
+    visibility: hidden;
+  }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6cqw;
+  height: 5cqw;
+  min-height: 32px;
+  padding: 0 2.6cqw;
+  white-space: nowrap;
+  border: 2px solid $line;
+  border-radius: 0.9cqw;
+  background: rgba(23, 26, 44, 0.92);
+  color: $ink;
+  font-size: max(12px, 1.7cqw);
+  font-weight: 800;
+  transition: 0.15s;
+
+  &:disabled {
+    opacity: 0.4;
+  }
+
+  b {
+    font-family: $display;
+    color: $yellow;
+  }
+}
+
+.ghost {
+  &:hover:not(:disabled) {
+    border-color: $muted;
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: $cyan;
+    box-shadow: 0 0 1.4cqw rgba(0, 240, 255, 0.5);
+  }
+}
+
+.primary {
+  border-color: $cyan;
+  background: rgba(0, 240, 255, 0.14);
+  color: #fff;
+  box-shadow: 0 0 1.4cqw rgba(0, 240, 255, 0.4);
+
+  &:hover:not(:disabled),
+  &:focus-visible {
+    outline: none;
+    background: rgba(0, 240, 255, 0.26);
+    box-shadow: 0 0 2.4cqw rgba(0, 240, 255, 0.75);
+  }
+}
+
+.danger {
+  border-color: $magenta;
+  background: rgba(255, 43, 214, 0.12);
+  color: #fff;
+  box-shadow: 0 0 1.2cqw rgba(255, 43, 214, 0.35);
+
+  &:hover:not(:disabled) {
+    background: rgba(255, 43, 214, 0.24);
+    box-shadow: 0 0 2.4cqw rgba(255, 43, 214, 0.7);
+  }
+
+  // フォーカスは、ほかの操作要素と同じ水色の光
+  &:focus-visible {
+    outline: none;
+    background: rgba(255, 43, 214, 0.24);
+    box-shadow: 0 0 0 2px $cyan, 0 0 2.4cqw rgba(0, 240, 255, 0.6);
+  }
+}
+
+// ---------- 賭け金パネル ----------
+.betPanel {
+  position: absolute;
+  z-index: 20;
+  right: 3cqw;
+  bottom: 1.8cqw;
+  display: grid;
+  gap: 0.7cqw;
+  width: 28cqw;
+  padding: 1.4cqw 1.6cqw;
+  background: rgba(16, 17, 30, 0.97);
+  border: 2px solid $cyan;
+  border-radius: 1.4cqw;
+  box-shadow: 0 0 3cqw rgba(0, 240, 255, 0.35);
+}
+
+.betTitle,
+.betRange {
+  color: $muted;
+}
+
+.betTitle {
+  font-size: max(10px, 1.3cqw);
+}
+
+.betRange {
+  font-size: max(9px, 1.1cqw);
+  text-align: center;
+}
+
+.betValue {
+  display: grid;
+  grid-template-columns: 4.4cqw 1fr 4.4cqw;
+  align-items: center;
+  gap: 0.8cqw;
+
+  button {
+    height: 4.4cqw;
+    min-height: 28px;
+    font-size: 2.2cqw;
+  }
+
+  output {
+    text-align: center;
+    font: 800 3.4cqw / 1.2 $display;
+    color: $yellow;
+
+    &.invalid {
+      color: $magenta;
+    }
+  }
+}
+
+.padKey {
+  border: 1px solid $line;
+  border-radius: 0.7cqw;
+  background: $surface-2;
+  font-weight: 700;
+  transition: border-color 0.15s;
+
+  &:hover {
+    border-color: $cyan;
+  }
+
+  @include glow-focus;
+}
+
+.keypad,
+.presets {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6cqw;
+
+  button {
+    height: 3cqw;
+    min-height: 24px;
+    font-size: max(11px, 1.6cqw);
+  }
+}
+
+.presets button {
+  font-family: $display;
+  font-size: max(10px, 1.2cqw);
+  color: $cyan;
+}
+
+.betActions {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 0.8cqw;
+
+  .btn {
+    padding: 0 1cqw;
+  }
+
+  &.single {
+    grid-template-columns: 1fr;
+  }
+}
+
+// 小さい GameFrame（スマホ横向きなど）：パネルを画面いっぱいに広げ、左に金額とボタン、右に数字キー
+@container (max-width: 700px) {
+  .betPanel {
+    inset: 2cqw;
+    width: auto;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto 1fr auto;
+    column-gap: 3cqw;
+    align-content: stretch;
+
+    > :not(.keypad) {
+      grid-column: 1;
+    }
+  }
+
+  .keypad {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    grid-auto-rows: 1fr;
+
+    button {
+      height: auto;
+    }
+  }
+
+  .presets {
+    align-self: end;
+  }
+
+  .isBetting .seatYou {
+    transform: none;
+  }
+}
+
+// ---------- 告知の帯 ----------
+.banner {
+  position: absolute;
+  inset: 0;
+  z-index: 15;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+
+  p {
+    display: grid;
+    justify-items: center;
+    gap: 0.6cqw;
+    width: 100%;
+    padding: 2cqw 6cqw;
+    background: rgba(7, 7, 15, 0.78);
+    border-top: 2px solid $cyan;
+    border-bottom: 2px solid $cyan;
+    font: 800 5cqw / 1.1 $display;
+    letter-spacing: 0.1em;
+    color: #fff;
+    text-shadow: 0 0 1.4cqw $cyan, 0 0 3cqw rgba(0, 240, 255, 0.6);
+    text-align: center;
+    animation: banner 0.35s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+  }
+
+  small {
+    font: 700 0.32em $body;
+    letter-spacing: 0.04em;
+    color: $ink;
+    text-shadow: none;
+  }
+
+  &[data-tone='phase'] p {
+    letter-spacing: 0.16em;
+  }
+
+  &[data-tone='you'] p {
+    color: $yellow;
+    text-shadow: 0 0 1.4cqw rgba(255, 230, 0, 0.8);
+    border-color: $yellow;
+  }
+
+  &[data-tone='cpu'] p {
+    text-shadow: 0 0 1.4cqw $magenta, 0 0 3cqw rgba(255, 43, 214, 0.6);
+    border-color: $magenta;
+  }
+}
+
+@keyframes banner {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+}
+
+// ---------- スタート画面 ----------
+.start {
+  z-index: 10;
+  background: rgba(7, 7, 15, 0.55);
+  backdrop-filter: blur(2px);
+}
+
+.startInner {
+  display: grid;
+  justify-items: center;
+  gap: 1cqw;
+}
+
+.kicker {
+  font: 600 1.5cqw $display;
+  letter-spacing: 0.5em;
+  color: $yellow;
+  animation: blink 1.2s steps(2, start) infinite;
+}
+
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+.title {
+  font: 800 8cqw / 1 $display;
+  letter-spacing: 0.06em;
+  color: #fff;
+  text-shadow: 0 0 1cqw $cyan, 0 0 3cqw $cyan;
+
+  span {
+    color: $magenta;
+    text-shadow: 0 0 1cqw $magenta, 0 0 3cqw $magenta;
+  }
+}
+
+.subtitle {
+  font-size: 1.8cqw;
+  font-weight: 800;
+}
+
+.startButton {
+  margin-top: 1.6cqw;
+  height: 6.2cqw;
+  padding: 0 5cqw;
+  font-family: $display;
+  font-size: 2.4cqw;
+  letter-spacing: 0.24em;
+}
+
+.note {
+  margin-top: 0.6cqw;
+  font-size: max(10px, 1.2cqw);
+  color: $muted;
+}
+
+// ---------- ルール説明モーダル ----------
+.rules {
+  z-index: 30;
+  background: rgba(5, 3, 14, 0.7);
+  backdrop-filter: blur(2px);
+}
+
+.rulesPanel {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  width: 76cqw;
+  height: 50cqw;
+  overflow: hidden;
+  text-align: left;
+  background: rgba(16, 17, 30, 0.98);
+  border: 2px solid $magenta;
+  border-radius: 1.6cqw;
+  box-shadow: 0 0 3cqw rgba(255, 43, 214, 0.4);
+}
+
+.rulesHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.4cqw 1.6cqw 1.2cqw 2.4cqw;
+  border-bottom: 1px solid $line;
+
+  h2 {
+    font-size: 2.2cqw;
+    color: #fff;
+  }
+}
+
+.rulesClose {
+  width: 4cqw;
+  height: 4cqw;
+  min-width: 30px;
+  min-height: 30px;
+  border: 1px solid $line;
+  border-radius: 50%;
+  background: $surface-2;
+  font-size: 2.4cqw;
+  line-height: 1;
+
+  &:hover {
+    border-color: $cyan;
+  }
+
+  @include glow-focus;
+}
+
+.rulesBody {
+  display: grid;
+  gap: 2cqw;
+  padding: 0 2.4cqw 2.4cqw;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  user-select: text;
+  -webkit-user-select: text;
+
+  h3 {
+    margin-bottom: 0.8cqw;
+    padding-top: 1.4cqw;
+    font-size: 1.7cqw;
+    color: $cyan;
+  }
+
+  ul {
+    display: grid;
+    gap: 0.4cqw;
+    padding-left: 1.4em;
+    font-size: max(11px, 1.45cqw);
+  }
+
+  b {
+    color: $yellow;
+  }
+}
+
+.hands {
+  display: grid;
+  gap: 0.6cqw;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: grid;
+    grid-template-columns: 3cqw 1fr auto;
+    align-items: center;
+    gap: 1.4cqw;
+    padding: 0.7cqw 1cqw;
+    background: $surface-2;
+    border-radius: 0.8cqw;
+  }
+}
+
+.handsNo {
+  font: 800 1.6cqw $display;
+  color: $magenta;
+  text-align: center;
+}
+
+.handsName {
+  display: grid;
+  font-size: max(11px, 1.55cqw);
+
+  small {
+    font-size: max(10px, 1.15cqw);
+    opacity: 0.75;
+  }
+}
+
+.handsExample {
+  display: flex;
+  gap: 0.4cqw;
+  font-size: 3cqw;
+}
