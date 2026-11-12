@@ -12,9 +12,15 @@ export const games: Game[] = [
     // docs/games/ポーカー.md
     id: '2',
     title: '1vs1 ポーカー',
-    // TODO: 一覧用の 16:9 画像は未用意（design/games/ポーカー.md §7）
-    image: '',
+    image: '/images/games/poker.png',
     categoryIds: ['table'],
+  },
+  {
+    // docs/games/マインスイーパ.md
+    id: '3',
+    title: 'マインスイーパ',
+    image: '/images/games/minesweeper.png',
+    categoryIds: ['puzzle'],
   },
 ];
 

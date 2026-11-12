@@ -10,6 +10,8 @@ export type ResultModalProps = {
   /** スコアの見出し（例: 逃げた距離） */
   scoreLabel: string;
   score: number;
+  /** スコアの表示を文字列で渡す（例: 時間「00:01:23」）。指定すると score の代わりに表示する */
+  displayScore?: string;
   /** スコアの単位（例: m） */
   unit?: string;
   /** ShareButtons に渡す文章 */
@@ -28,6 +30,7 @@ export function ResultModal({
   isOpen,
   scoreLabel,
   score,
+  displayScore,
   unit,
   shareText,
   shareUrl,
@@ -58,7 +61,7 @@ export function ResultModal({
           {scoreLabel}
         </p>
         <p className={styles.score}>
-          {score.toLocaleString()}
+          {displayScore ?? score.toLocaleString()}
           {unit && <small className={styles.unit}>{unit}</small>}
         </p>
         <button type="button" ref={retryRef} className={styles.retry} onClick={onRetry}>

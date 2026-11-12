@@ -19,3 +19,8 @@ export function buildShareUrl(target: ShareTarget, text: string, url: string): s
 export function currentPageUrl(): string {
   return `${window.location.origin}${window.location.pathname}`;
 }
+
+/** シェアする URL。省略時は現在のページ。"/" のような相対パスは、今のサイトの URL にする */
+export function resolveShareUrl(url?: string): string {
+  return url ? new URL(url, window.location.origin).href : currentPageUrl();
+}

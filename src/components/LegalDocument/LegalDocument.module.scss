@@ -1,0 +1,50 @@
+@use '../../styles/tokens' as *;
+
+// 長い文章を読みやすくするため、行間を広めにする
+.preamble,
+.section {
+  font-size: 14px;
+  line-height: 1.9;
+
+  p {
+    margin: 0 0 0.8em;
+  }
+}
+
+.preamble {
+  margin-bottom: 32px;
+}
+
+.section {
+  margin-bottom: 28px;
+
+  h2 {
+    margin: 0 0 10px;
+    padding-left: 10px;
+    border-left: 3px solid $color-cyan;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.5;
+  }
+}
+
+.ordered,
+.bullets {
+  margin: 0 0 0.8em;
+  padding-left: 1.6em;
+
+  li + li {
+    margin-top: 0.3em;
+  }
+}
+
+.ordered {
+  list-style: decimal;
+}
+
+.established {
+  margin: 40px 0 0;
+  font-size: 13px;
+  color: $color-muted;
+  text-align: right;
+}

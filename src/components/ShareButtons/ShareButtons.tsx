@@ -2,13 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { FacebookIcon, LineIcon, LinkIcon, XIcon } from './icons';
-import { buildShareUrl, currentPageUrl, type ShareTarget } from './shareUrls';
+import { buildShareUrl, resolveShareUrl, type ShareTarget } from './shareUrls';
 import styles from './ShareButtons.module.scss';
 
 export type ShareButtonsProps = {
   /** シェアする文章 */
   text: string;
-  /** シェアする URL。省略時は現在のページ */
+  /** シェアする URL。省略時は現在のページ。"/" のような相対パスも使える */
   url?: string;
   /** 小見出し */
   title?: string;
@@ -26,6 +26,9 @@ const TARGETS: { target: ShareTarget; label: string; Icon: typeof XIcon }[] = [
 /**
  * SNS シェアのボタン群（docs/design.md §5 ShareButtons）。
  * 見た目は CSS カスタムプロパティ --share-border / --share-bg / --share-bg-hover / --share-ink / --share-radius で上書きできる。
+ * 大きさは既定で cqw（親のコンテナ幅）に比例する。コンテナの外で使うときは
+ * --share-height / --share-padding / --share-gap / --share-font-size / --share-icon-size /
+ * --share-title-size / --share-title-gap / --share-justify で指定する。
  */
 export function ShareButtons({ text, url, title = '結果をシェア', className }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
@@ -36,12 +39,12 @@ export function ShareButtons({ text, url, title = '結果をシェア', classNam
   }, []);
 
   const share = (target: ShareTarget) => {
-    window.open(buildShareUrl(target, text, url ?? currentPageUrl()), '_blank', 'noopener,width=600,height=560');
+    window.open(buildShareUrl(target, text, resolveShareUrl(url)), '_blank', 'noopener,width=600,height=560');
   };
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(`${text} ${url ?? currentPageUrl()}`);
+      await navigator.clipboard.writeText(`${text} ${resolveShareUrl(url)}`);
     } catch {
       return;
     }

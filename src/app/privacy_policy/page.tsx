@@ -1,17 +1,16 @@
 import type { Metadata } from 'next';
-import { StaticPage } from '@/components/StaticPage';
+import { LegalDocument } from '@/components/LegalDocument';
+import { PRIVACY } from '@/content/legal/privacy';
 
 export const metadata: Metadata = {
   title: 'プライバシーポリシー',
+  description: 'NEON GAMES のプライバシーポリシーです。',
 };
 
-// TODO: 本文確定後に差し替える
 export default function PrivacyPolicyPage() {
   return (
     <div className="container">
-      <StaticPage title="プライバシーポリシー">
-        <p>準備中です。</p>
-      </StaticPage>
+      <LegalDocument document={PRIVACY} />
     </div>
   );
 }

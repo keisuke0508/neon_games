@@ -1,30 +1,31 @@
-// 寸法は cqw（親のコンテナ幅の1%）で指定する。ResultModal の中では GameFrame の幅が基準になる
+// 寸法は既定で cqw（親のコンテナ幅の1%）。ResultModal の中では GameFrame の幅が基準になる。
+// コンテナの外（フッターなど）で使うときは --share-* の変数で大きさを指定する
 
 .title {
-  margin: 0 0 1cqw;
-  font-size: max(10px, 1.2cqw);
-  opacity: 0.75;
+  margin: 0 0 var(--share-title-gap, 1cqw);
+  font-size: var(--share-title-size, max(10px, 1.2cqw));
+  opacity: var(--share-title-opacity, 0.75);
 }
 
 .buttons {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 1cqw;
+  justify-content: var(--share-justify, center);
+  gap: var(--share-gap, 1cqw);
 }
 
 .button {
   display: inline-flex;
   align-items: center;
-  gap: 0.8cqw;
-  height: 4.4cqw;
+  gap: var(--share-icon-gap, 0.8cqw);
+  height: var(--share-height, 4.4cqw);
   min-height: 30px;
-  padding: 0 1.4cqw;
+  padding: 0 var(--share-padding, 1.4cqw);
   border-radius: var(--share-radius, 999px);
   border: var(--share-border, 1px solid currentColor);
   background: var(--share-bg, transparent);
   color: var(--share-ink, inherit);
-  font-size: max(11px, 1.45cqw);
+  font-size: var(--share-font-size, max(11px, 1.45cqw));
   font-weight: 700;
   line-height: 1;
   white-space: nowrap;
@@ -43,8 +44,8 @@
 
 .icon {
   flex: none;
-  width: 1.5cqw;
-  height: 1.5cqw;
+  width: var(--share-icon-size, 1.5cqw);
+  height: var(--share-icon-size, 1.5cqw);
   min-width: 12px;
   min-height: 12px;
   fill: currentColor;

@@ -33,6 +33,12 @@ describe('ResultModal', () => {
     expect(onRetry).toHaveBeenCalledTimes(1);
   });
 
+  it('displayScore を渡すと、数値の代わりにその文字列を表示する', () => {
+    render(<ResultModal {...props} isOpen score={83} displayScore="00:01:23" unit={undefined} />);
+    expect(screen.getByRole('dialog')).toHaveTextContent('00:01:23');
+    expect(screen.getByRole('dialog')).not.toHaveTextContent('83');
+  });
+
   it('Esc では閉じない', async () => {
     render(<ResultModal {...props} isOpen />);
     await userEvent.keyboard('{Escape}');

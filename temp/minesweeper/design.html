@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>マインスイーパ | NEON_GAMES</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=M+PLUS+1p:wght@400;700;800&family=Dela+Gothic+One&family=Zen+Maru+Gothic:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="ms.css">
+<style>
+/* マインスイーパ: 発掘現場 — 土のブロックを掘ると砂地と数字。測量用の赤い旗を立てる */
+.ms { --ink: #2A1C10; --sand: #F1DEB2; --dirt: #B07A48; --red: #E0402F; --yel: #FFC93C;
+  color: #FFF4DA; font-family: "Zen Maru Gothic", sans-serif; font-weight: 900;
+  background: linear-gradient(#7A5534, #5B3D24 40%, #4A3120 70%, #3C2718); }
+.ms::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .35;
+  background: radial-gradient(circle at 20% 30%, #2A1C10 .25cqw, transparent .3cqw) 0 0 / 7cqw 6cqw, radial-gradient(circle at 70% 60%, #9C7A55 .3cqw, transparent .35cqw) 0 0 / 9cqw 7cqw; }
+.ms-level { justify-self: start; padding: .3cqw 1.4cqw; color: var(--ink); background: var(--yel); border: .25cqw solid var(--ink); border-radius: .4cqw; box-shadow: .3cqw .3cqw 0 var(--ink); }
+.ms-hint { color: #FFF4DA; text-shadow: 0 .15cqw .3cqw rgba(0,0,0,.6); }
+.ms-hud__item { background: #2E1F12; border: .2cqw solid #120A04; border-radius: .5cqw; box-shadow: inset 0 0 0 .2cqw #6B4A2C; color: #FFE7A8; }
+.ms-hud__item b { font-family: "Dela Gothic One", sans-serif; font-weight: 400; letter-spacing: .04em; }
+.ms-hud__mines .ic { fill: var(--red); } .ms-hud__time .ic { fill: #FFE7A8; }
+.ms-hud .ic-mine .ic-body, .ms-hud .ic-mine .ic-spike { fill: #FFE7A8; } .ms-hud .ic-mine .ic-shine { fill: #2E1F12; }
+.ms-hud__mines.is-over b { color: #FF8A7A; }
+.ms-home-btn { background: #FFF4DA; border: .25cqw solid var(--ink); border-radius: .5cqw; box-shadow: 0 .3cqw 0 var(--ink); }
+.ms-home-btn .ic { fill: var(--ink); }
+.ms-home-btn:hover, .ms-home-btn:focus-visible { outline: none; background: var(--yel); transform: translateY(-.15cqw); }
+.ms-home-btn:focus-visible { outline: .25cqw dashed #fff; outline-offset: .3cqw; }
+.ms-home-btn:active { transform: translateY(.25cqw); box-shadow: 0 .05cqw 0 var(--ink); }
+.ms-confirm { background: rgba(30,18,8,.55); }
+.ms-confirm__panel { background: #FFF4DA; color: var(--ink); border: .35cqw solid var(--ink); border-radius: 1cqw; box-shadow: .6cqw .6cqw 0 var(--ink); animation: ms-menu .18s ease-out; }
+.ms-confirm__title { font-family: "Dela Gothic One", sans-serif; font-weight: 400; }
+.ms-confirm__text { color: #6B5238; }
+.ms-confirm .ms-btn { border: .3cqw solid var(--ink); border-radius: .6cqw; font-weight: 900; box-shadow: 0 .4cqw 0 var(--ink); }
+.ms-btn--ghost { background: #fff; color: var(--ink); }
+.ms-btn--danger { background: var(--red); color: #fff; }
+.ms-confirm .ms-btn:hover, .ms-confirm .ms-btn:focus-visible { outline: none; transform: translateY(-.15cqw); }
+.ms-confirm .ms-btn:focus-visible { outline: .25cqw dashed var(--ink); outline-offset: .3cqw; }
+.ms-confirm .ms-btn:active { transform: translateY(.3cqw); box-shadow: 0 .1cqw 0 var(--ink); }
+
+.ms-board { background: #3B2716; border: .6cqw solid #6B4423; border-radius: .6cqw; box-shadow: inset 0 0 0 .2cqw #2A1C10, 0 .6cqw 1.4cqw rgba(0,0,0,.5); --gap: .12cqw; }
+.ms-cell { border-radius: .3cqw; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.12) .2cqw, transparent .3cqw), var(--dirt);
+  box-shadow: inset 0 .25cqw 0 rgba(255,230,190,.35), inset 0 -.3cqw 0 rgba(60,30,10,.4); }
+.ms-board .ms-cell:not(.is-open):hover { filter: brightness(1.12); }
+.ms-cell.is-open { background: var(--sand); box-shadow: inset 0 .3cqw .4cqw rgba(110,70,30,.4); }
+.ms-cell span { font-family: "Dela Gothic One", sans-serif; font-weight: 400; }
+.ms-cell[data-n="1"] { color: #1F5BC0; } .ms-cell[data-n="2"] { color: #1F6E2E; } .ms-cell[data-n="3"] { color: #B0251D; } .ms-cell[data-n="4"] { color: #5C35A8; }
+.ms-cell[data-n="5"] { color: #9A4A1C; } .ms-cell[data-n="6"] { color: #0E6B6B; } .ms-cell[data-n="7"] { color: #2A1C10; } .ms-cell[data-n="8"] { color: #6A5E52; }
+.ic-flag .ic-cloth { fill: var(--red); } .ic-flag .ic-pole { fill: #F7EBD0; } .ic-flag .ic-base { fill: #2A1C10; }
+.ms-cell .ic-flag { filter: drop-shadow(.08cqw .12cqw 0 rgba(0,0,0,.45)); }
+.ic-mine .ic-body, .ic-mine .ic-spike { fill: #1E1612; } .ic-mine .ic-shine { fill: #fff; }
+.ms-cell.is-boom { background: var(--red); }
+.ms-cell.is-target { box-shadow: 0 0 0 .3cqw var(--yel), 0 .3cqw .6cqw rgba(0,0,0,.5); }
+.ms-cell.is-around { box-shadow: inset 0 0 0 .25cqw var(--yel); }
+.ms-cell:focus-visible { box-shadow: 0 0 0 .3cqw #fff; }
+.ms-cell.is-wrong::after { color: var(--red); }
+.ms.is-cleared .ms-board { border-color: var(--yel); }
+
+.ms-menu { background: #FFF4DA; border: .3cqw solid var(--ink); border-radius: .8cqw; box-shadow: .4cqw .4cqw 0 var(--ink); }
+.ms-menu::after { background: #FFF4DA; border-right: .3cqw solid var(--ink); border-bottom: .3cqw solid var(--ink); }
+.ms-menu.is-below::after { border: 0; border-left: .3cqw solid var(--ink); border-top: .3cqw solid var(--ink); }
+.ms-menu__btn { border: .25cqw solid var(--ink); border-radius: .5cqw; background: #fff; color: var(--ink); font-weight: 900; box-shadow: 0 .3cqw 0 var(--ink); }
+.ms-menu__btn--primary { background: var(--yel); }
+.ms-menu__btn--flag { background: var(--red); color: #fff; }
+.ms-menu__btn:hover, .ms-menu__btn:focus-visible { outline: none; transform: translateY(-.15cqw); }
+.ms-menu__btn:active { transform: translateY(.25cqw); box-shadow: 0 .05cqw 0 var(--ink); }
+
+.ms-banner p { font: 400 7cqw "Dela Gothic One", sans-serif; -webkit-text-stroke: .9cqw var(--ink); paint-order: stroke fill; text-shadow: .6cqw .6cqw 0 var(--ink); }
+.ms-banner.is-win p { color: var(--yel); }
+.ms-banner.is-lose p { color: var(--red); }
+
+.ms-bg .ms-cell { background: var(--dirt); box-shadow: inset 0 .25cqw 0 rgba(255,230,190,.35), inset 0 -.3cqw 0 rgba(60,30,10,.4); }
+.ms-bg .ms-cell.is-open { background: var(--sand); }
+.ms-bg::after { content: ""; position: absolute; inset: 0; background: radial-gradient(55% 65% at 50% 50%, rgba(40,25,12,.55), rgba(40,25,12,.88)); }
+.ms-start::before, .ms-start::after { content: ""; position: absolute; left: -2cqw; right: -2cqw; height: 2.6cqw; background: repeating-linear-gradient(-45deg, var(--yel) 0 2cqw, #1E1612 2cqw 4cqw); box-shadow: 0 .3cqw .6cqw rgba(0,0,0,.4); }
+.ms-start::before { top: 2cqw; transform: rotate(-1.5deg); } .ms-start::after { bottom: 2cqw; transform: rotate(1.5deg); }
+.ms-start__badge { background: #1E1612; color: var(--yel); padding: .4cqw 1.6cqw; border-radius: 99px; font-size: 1.5cqw; }
+.ms-start__title { font: 400 8cqw/1.15 "Dela Gothic One", sans-serif; color: var(--yel); -webkit-text-stroke: 1cqw var(--ink); paint-order: stroke fill; text-shadow: .7cqw .7cqw 0 var(--ink); }
+.ms-start__sub { font-size: 1.9cqw; color: #FFF4DA; text-shadow: 0 .2cqw .4cqw rgba(0,0,0,.6); }
+.ms-btn--start { border: .3cqw solid var(--ink); border-radius: .8cqw; background: var(--red); color: #fff; font-family: "Dela Gothic One", sans-serif; font-weight: 400; box-shadow: 0 .6cqw 0 var(--ink); }
+.ms-btn--start:hover, .ms-btn--start:focus-visible { outline: none; transform: translateY(-.2cqw); }
+.ms-btn--start:active { transform: translateY(.5cqw); box-shadow: 0 .1cqw 0 var(--ink); }
+.ms-levels__title { color: #FFF4DA; text-shadow: 0 .2cqw .4cqw rgba(0,0,0,.6); }
+.ms-level-btn { border: .3cqw solid var(--ink); border-radius: .8cqw; color: var(--ink); box-shadow: 0 .5cqw 0 var(--ink); font-weight: 900; }
+.ms-level-btn__name { font-family: "Dela Gothic One", sans-serif; font-weight: 400; }
+.ms-level-btn--easy { background: #A6D63C; }
+.ms-level-btn--normal { background: var(--yel); }
+.ms-level-btn--hard { background: var(--red); color: #fff; }
+.ms-level-btn:active { transform: translateY(.4cqw); box-shadow: 0 .1cqw 0 var(--ink); }
+.ms-level-btn:focus-visible { outline: .3cqw dashed #fff; outline-offset: .4cqw; }
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="container"><a class="logo" href="#">NEON<b>_</b>GAMES</a></div>
+</header>
+
+<main>
+  <section class="container">
+    <div class="game-wrap">
+      <div class="game-head"><h1>マインスイーパ</h1></div>
+      <div class="game-frame">
+        <!-- ===== ここから下がゲーム（GameFrame の children）。中身は ms.js が組み立てる ===== -->
+        <div class="ms" data-state="start" aria-label="マインスイーパ"></div>
+      </div>
+      <p class="rotate-hint">端末を横向きにすると大画面でプレイできます</p>
+      <div class="game-actions"><button type="button" class="app-button">◀ EXIT ／ TOPに戻る</button></div>
+    </div>
+  </section>
+</main>
+
+<nav class="mock-bar" aria-label="モック操作"><span>マインスイーパ</span><a href="#" onclick="location.hash='';location.reload();return false">スタート</a><a href="#levels" onclick="location.hash='levels';location.reload();return false">難易度</a><a href="#play-easy" onclick="location.hash='play-easy';location.reload();return false">かんたん</a><a href="#play-normal" onclick="location.hash='play-normal';location.reload();return false">ふつう</a><a href="#play-hard" onclick="location.hash='play-hard';location.reload();return false">むずかしい</a></nav>
+
+<script src="ms.js"></script>
+<script>
+Minesweeper.mount(document.querySelector('.ms'), {
+  startHTML: "<p class=\"ms-start__badge\">工事中・爆弾に注意</p><p class=\"ms-start__title\">マインスイーパ</p><p class=\"ms-start__sub\">爆弾を避けて、ぜんぶ掘りあてろ！</p>",
+  labels: {"start": "掘りはじめる", "chooseLevel": "難易度をえらんでください", "dig": "掘る", "flag": "旗を置く", "unflag": "旗を外す", "cancel": "キャンセル", "home": "スタート画面に戻る", "homeQ": "スタート画面に戻りますか？", "homeNote": "このゲームの盤面と時間は消えます。", "yes": "はい", "no": "いいえ", "firstHint": "最初に掘るマスを選んでください", "win": "CLEAR!", "lose": "BOOM!"},
+});
+</script>
+</body>
+</html>

@@ -19,6 +19,35 @@
   gap: 8px 24px;
 }
 
+// サービスのシェア（1行目いっぱい。ゲーム一覧などのリンクとコピーライトは2行目）
+.share {
+  flex-basis: 100%;
+  margin-bottom: 8px;
+  --share-height: 32px;
+  --share-padding: 12px;
+  --share-gap: 8px;
+  --share-icon-gap: 6px;
+  --share-font-size: 12px;
+  --share-icon-size: 13px;
+  --share-title-size: 12px;
+  --share-title-gap: 10px;
+  --share-justify: flex-start;
+  --share-border: 1px solid #{$color-line};
+  --share-bg-hover: rgba(0, 240, 255, 0.12);
+  --share-ink: #{$color-ink};
+  --share-focus: #{$color-cyan};
+  // muted の文字を半透明にするとコントラストが足りなくなるので、不透明のまま
+  --share-title-opacity: 1;
+
+  button:hover {
+    border-color: #3b4066;
+  }
+
+  button:focus-visible {
+    box-shadow: $glow-cyan;
+  }
+}
+
 .nav {
   display: flex;
   flex-wrap: wrap;

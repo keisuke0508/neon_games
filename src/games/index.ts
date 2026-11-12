@@ -10,4 +10,5 @@ import type { ComponentType } from 'react';
 export const gameComponents: Record<string, ComponentType> = {
   '1': dynamic(() => import('./kozo-run/KozoRun')),
   '2': dynamic(() => import('./poker/Poker')),
+  '3': dynamic(() => import('./minesweeper/Minesweeper')),
 };
